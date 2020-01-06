@@ -1,14 +1,12 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 Shader "Vertex/Show Vertex"
 {
     Properties
     {
-        //_Color("顶点颜色", Color) = (1, 1, 1, 0)
-        //_AlphaColor("透明度", Range(0, 1)) = 0.5
-        _PointSize("点的大小", Range(0.1, 5.0)) = 1.0
-        _PointColor("顶点颜色", Color) = (1.0, 1.0, 1.0, 0.0)
         _FragColor("片段颜色", Color) = (1.0, 0.0, 0.0, 1.0)
-        _PointX("Point_X", float) = 1.0
-        _PointY("Point_Y", float) = 1.0
     }
     SubShader
     {
@@ -18,15 +16,12 @@ Shader "Vertex/Show Vertex"
             //Cull Off
             //ZWrite Off
             CGPROGRAM
-            #pragma vertex vert
+            #pragma vertex verts
             //#pragma geometry geom
             #pragma fragment frag
             #include "UnityCG.cginc"
-            float _PointSize;
-            fixed4 _PointColor;
+            #include "UnityShaderVariables.cginc"
             fixed4 _FragColor;
-            float _PointX;
-            float _PointY;
 
             struct vsIn
             {
@@ -34,21 +29,20 @@ Shader "Vertex/Show Vertex"
             };
             struct psIn
             {
-                float4 finalPos : SV_POSITION;
+                float4 fPos : SV_POSITION;
             };
 
             psIn vert(vsIn v)
             {
-                psIn o;
-                o.finalPos = UnityViewToClipPos(v.pos);
-                o.finalPos.x -= _SinTime.w * 0.5;
-                o.finalPos.y -= _SinTime.w;
+                psIn o;  
+                float4 viewPos = mul(UNITY_MATRIX_MV, float4(v.pos.xyz, 1.0));
+                o.fPos = mul(UNITY_MATRIX_P, viewPos);
                 return o;
             }
 
             fixed4 frag(psIn o) : SV_TARGET
             {
-                return fixed4(_SinTime.x,_FragColor.gba);
+                return _FragColor;
             }
             ENDCG
         }

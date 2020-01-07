@@ -7,16 +7,12 @@ Shader "Vertex/Show Vertex"
     Properties
     {
         _FragColor("片段颜色", Color) = (1.0, 0.0, 0.0, 1.0)
-        _vertexSize("点的大小", range(0.0, 500.0)) = 0.2
+        _vertexSize("顶点大小", Range(0.0, 1000)) = 1.0
     }
     SubShader
     {
         pass
         {
-            //lend SrcAlpha OneMinusSrcAlpha
-            //Cull Front
-            Cull Back
-            ZWrite Off
             CGPROGRAM
             #pragma vertex vert
             //#pragma geometry geom
@@ -44,23 +40,17 @@ Shader "Vertex/Show Vertex"
                 float4 clipPos = mul(UNITY_MATRIX_P, viewPos);
                 o.fPos = clipPos;
                 o.screenPos = ComputeScreenPos(o.fPos);
-                //o.worldNormal = 
                 
                 return o;
             }
 
-            fixed4 frag(psIn o, float4 vertInScreenPos : SV_POSITION) : SV_TARGET
+            fixed4 frag(psIn o) : SV_TARGET
             {
-                float4 screenPos = o.screenPos;
-                screenPos.xy *= _ScreenParams.xy; 
-                float vertexRange = distance(vertInScreenPos.xy, screenPos.xy);
-                if(vertexRange >= _vertexSize)
-                {
-                    return _FragColor;
-                }
-                else{
-                    return fixed4(0.0, 1.0, 0.0, 1.0);
-                }
+                o.screenPos /= o.screenPos.w;
+                
+                float vertexRange = distance(o.screenPos.xy, o.fPos.xy);
+                clip((_vertexSize-vertexRange) - 0.0 );
+                return _FragColor;
             }
             ENDCG
         }

@@ -26,31 +26,37 @@ Shader "Vertex/Show Vertex"
             {
                 float4 pos : POSITION;
             };
-            struct psIn
+            struct fsIn
             {
-                float4 fPos : SV_POSITION;
-                float4 screenPos : TEXCOORD1;
+                float4 pos : SV_POSITION;
+                float4 vertexScreenPos : TEXCOORD1;
             };
 
-            psIn vert(vsIn v)
+            fsIn vert(vsIn v)
             {
-                psIn o;
+                fsIn o;
                 float4 worldPos = float4(mul(unity_ObjectToWorld, v.pos));
                 float4 viewPos = (mul(UNITY_MATRIX_V, worldPos));
-                float4 clipPos = mul(UNITY_MATRIX_P, viewPos);
-                o.fPos = clipPos;
-                o.screenPos = ComputeScreenPos(o.fPos);
-                
+                o.pos = mul(UNITY_MATRIX_P, viewPos);          
+                o.vertexScreenPos = o.pos;// clip Position
+                o.vertexScreenPos.xy /= o.vertexScreenPos.w;//transform to NDC Position
+                o.vertexScreenPos.xy = (o.vertexScreenPos.xy + 1.0) * 0.5 * _ScreenParams.xy;//transofrm to Screen pixel position
                 return o;
             }
 
-            fixed4 frag(psIn o) : SV_TARGET
+            fixed4 frag(fsIn o) : SV_TARGET
             {
-                o.screenPos /= o.screenPos.w;
-                
-                float vertexRange = distance(o.screenPos.xy, o.fPos.xy);
-                clip((_vertexSize-vertexRange) - 0.0 );
-                return _FragColor;
+                float vertexRange = distance(o.vertexScreenPos.xy, o.pos.xy);
+                if(_vertexSize - vertexRange > 0)
+                //clip(o.Pos.x - _vertexSize);
+                {
+                    return _FragColor;
+
+                }
+                else
+                {
+                    return fixed4(1.0, 1.0, 1.0, 1.0);
+                }
             }
             ENDCG
         }

@@ -29,6 +29,7 @@ Shader "Vertex/Show Vertex"
                 float4 pos : SV_POSITION;
                 float4 texCd :TEXCOORD0;
                 float4 screenPos : TEXCOORD1;
+                float4 vResult: TEXCOORD2;
             };
 
             fsIn vert(vsIn v)
@@ -38,6 +39,10 @@ Shader "Vertex/Show Vertex"
                 o.texCd = v.txCd;
                 o.screenPos = mul(UNITY_MATRIX_M, v.pos);
                 o.screenPos.y = -o.screenPos.y;
+                if(o.screenPos.x !=0 && o.screenPos.y!=0 && o.screenPos.z != 0)
+                {
+                    o.vResult = float4 (1.0, 1.0, 1.0, 1.0)
+                }
                 //o.screenPos.xy = ((o.screenPos.xy / o.screenPos.w) + 1.0) * 0.5 * _ScreenParams.xy;      
                 return o;
             }

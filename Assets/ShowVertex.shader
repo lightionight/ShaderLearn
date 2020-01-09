@@ -47,7 +47,8 @@ Shader "Vertex/Show Vertex"
             fixed4 frag(fsIn o) : SV_TARGET
             {
                 float vertexRange = distance(o.vertexScreenPos.xy, o.pos.xy);
-                if(_vertexSize - vertexRange > 0)
+                if(_vertexSize - vertexRange 
+                > 0)
                 //clip(o.Pos.x - _vertexSize);
                 {
                     return _FragColor;

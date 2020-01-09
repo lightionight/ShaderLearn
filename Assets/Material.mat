@@ -90,14 +90,15 @@ Material:
     - _UseUIAlphaClip: 0
     - _Width: 0
     - _ZWrite: 1
-    - _vertexSize: 1
+    - _vertexSize: 65
     m_Colors:
     - _Color: {r: 0.754717, g: 0.23851903, b: 0.23851903, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Flip: {r: 1, g: 1, b: 1, a: 1}
-    - _FragColor: {r: 1, g: 0.0077323047, b: 0, a: 0}
+    - _FragColor: {r: 0.9056604, g: 0.19223925, b: 0.19223925, a: 0}
     - _PointColor: {r: 0.2956123, g: 0.8584906, b: 0.54346454, a: 0}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
     - _VertexColor: {r: 1, g: 0.5, b: 1, a: 1}
     - _color: {r: 1, g: 1, b: 1, a: 1}
     - _outColor: {r: 1, g: 0, b: 0.07238674, a: 1}
+    - _vertexColor: {r: 0.121568605, g: 0.9607843, b: 0.91651297, a: 0}

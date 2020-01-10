@@ -14,7 +14,6 @@ Shader "Vertex/Show Vertex"
             #pragma vertex vert
             #pragma fragment frag
             #include "UnityCG.cginc"
-            #include "UnityShaderVariables.cginc"
             fixed4 _FragColor;
             fixed4 _vertexColor;
             float _vertexSize;
@@ -22,36 +21,29 @@ Shader "Vertex/Show Vertex"
             struct vsIn
             {
                 float4 pos : POSITION;
-                float4 txCd : TEXCOORD0;
             };
             struct fsIn
             {
                 float4 pos : SV_POSITION;
-                float4 texCd :TEXCOORD0;
-                float4 screenPos : TEXCOORD1;
-                float4 vResult: TEXCOORD2;
+                float4 screenPos[1] : TEXCOORD1;
             };
 
             fsIn vert(vsIn v)
             {
                 fsIn o;
                 o.pos = UnityObjectToClipPos(v.pos);
-                o.texCd = v.txCd;
-                o.screenPos = mul(UNITY_MATRIX_M, v.pos);
-                o.screenPos.y = -o.screenPos.y;
-                if(o.screenPos.x !=0 && o.screenPos.y!=0 && o.screenPos.z != 0)
-                {
-                    o.vResult = float4 (1.0, 1.0, 1.0, 1.0);
-                }
-                //o.screenPos.xy = ((o.screenPos.xy / o.screenPos.w) + 1.0) * 0.5 * _ScreenParams.xy;      
+                // o.screenPos = mul(UNITY_MATRIX_M, v.pos);
+                o.screenPos[0] = o.pos;
+                o.screenPos[0].xy = ((o.screenPos[0].xy / o.screenPos[0].w) + 1.0) * 0.5 * _ScreenParams.xy;      
+                o.screenPos[0].y = -o.screenPos[0].y;
                 return o;
             }
-            
-
+            //传入的o.screenPos.xyz 是每个像素点在世界坐标下胡坐标值,进行了插值
             fixed4 frag(fsIn o) : SV_TARGET
-            {
-                // float vertexRange = distance(o.screenPos.xy, float2(200, 500));
-                // if(vertexRange < _vertexSize)
+            { 
+                float vertexSizeRange = distance(o.screenPos[0].xy, o.pos.xy);
+                clip(vertexSizeRange - 20.0);
+                // if(vertexSizeRange <= 20.0)
                 // {
                 //     return _vertexColor;
                 // }
@@ -59,9 +51,7 @@ Shader "Vertex/Show Vertex"
                 // {
                 //     return _FragColor;
                 // }
-                //return float4((vertexRange / 768), 0.0, 0.0, 1.0);
-                //o.screenPos.xyz 是每个像素点在世界坐标下胡坐标值,进行了插值
-                return float4(o.screenPos.xyz, 1.0);
+                return fixed4(o.screenPos[0].xyz, 1.0);
             }
             ENDCG
         }

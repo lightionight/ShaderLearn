@@ -41,7 +41,7 @@ Shader "Vertex/Show Vertex"
                 o.screenPos.y = -o.screenPos.y;
                 if(o.screenPos.x !=0 && o.screenPos.y!=0 && o.screenPos.z != 0)
                 {
-                    o.vResult = float4 (1.0, 1.0, 1.0, 1.0)
+                    o.vResult = float4 (1.0, 1.0, 1.0, 1.0);
                 }
                 //o.screenPos.xy = ((o.screenPos.xy / o.screenPos.w) + 1.0) * 0.5 * _ScreenParams.xy;      
                 return o;
@@ -61,7 +61,7 @@ Shader "Vertex/Show Vertex"
                 // }
                 //return float4((vertexRange / 768), 0.0, 0.0, 1.0);
                 //o.screenPos.xyz 是每个像素点在世界坐标下胡坐标值,进行了插值
-                return float4(o.screenPos.xyz, 1.0f);
+                return float4(o.screenPos.xyz, 1.0);
             }
             ENDCG
         }

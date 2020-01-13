@@ -11,6 +11,7 @@ Shader "Vertex/Show Vertex"
         pass
         {
             CGPROGRAM
+             #pragma enable_d3d11_debug_symbols
             #pragma vertex vert
             #pragma fragment frag
             #include "UnityCG.cginc"
@@ -25,25 +26,23 @@ Shader "Vertex/Show Vertex"
             struct fsIn
             {
                 float4 pos : SV_POSITION;
-                float4 screenPos[1] : TEXCOORD1;
+                nointerpolation float4 screenPos : TEXCOORD1;
             };
 
             fsIn vert(vsIn v)
             {
                 fsIn o;
                 o.pos = UnityObjectToClipPos(v.pos);
-                // o.screenPos = mul(UNITY_MATRIX_M, v.pos);
-                o.screenPos[0] = o.pos;
-                o.screenPos[0].xy = ((o.screenPos[0].xy / o.screenPos[0].w) + 1.0) * 0.5 * _ScreenParams.xy;      
-                o.screenPos[0].y = -o.screenPos[0].y;
+                o.screenPos = o.pos;
+                o.screenPos.xy = ((o.screenPos.xy / o.screenPos.w) + 1.0) * 0.5 * _ScreenParams.xy;      
+                o.screenPos.y = -o.screenPos.y;
                 return o;
             }
             //传入的o.screenPos.xyz 是每个像素点在世界坐标下胡坐标值,进行了插值
             fixed4 frag(fsIn o) : SV_TARGET
             { 
-                float vertexSizeRange = distance(o.screenPos[0].xy, o.pos.xy);
-                clip(vertexSizeRange - 20.0);
-                // if(vertexSizeRange <= 20.0)
+                // float vertexSizeRange = distance(o.screenPos.xy, o.pos.xy);
+                // if(vertexSizeRange <= _vertexSize)
                 // {
                 //     return _vertexColor;
                 // }
@@ -51,7 +50,14 @@ Shader "Vertex/Show Vertex"
                 // {
                 //     return _FragColor;
                 // }
-                return fixed4(o.screenPos[0].xyz, 1.0);
+                if(o.screenPos.x < 50)
+                {
+                    return fixed();
+                }
+                else
+                {
+                    return _FragColor;
+                }
             }
             ENDCG
         }

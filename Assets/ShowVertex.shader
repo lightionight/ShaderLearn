@@ -33,9 +33,9 @@ Shader "Vertex/Show Vertex"
             {
                 fsIn o;
                 o.pos = UnityObjectToClipPos(v.pos);
-                o.screenPos = o.pos;
-                o.screenPos.xy = ((o.screenPos.xy / o.screenPos.w) + 1.0) * 0.5 * _ScreenParams.xy;      
-                o.screenPos.y = -o.screenPos.y;
+                o.screenPos = mul(UNITY_MATRIX_M, v.pos);
+                //o.screenPos.xy = ((o.screenPos.xy / o.screenPos.w) + 1.0) * 0.5 * _ScreenParams.xy;      
+                //o.screenPos.y = -o.screenPos.y;
                 return o;
             }
             //传入的o.screenPos.xyz 是每个像素点在世界坐标下胡坐标值,进行了插值
@@ -50,14 +50,15 @@ Shader "Vertex/Show Vertex"
                 // {
                 //     return _FragColor;
                 // }
-                if(o.screenPos.x < 50)
-                {
-                    return fixed();
-                }
-                else
-                {
-                    return _FragColor;
-                }
+                // if(o.screenPos.x < 50)
+                // {
+                //     return fixed();
+                // }
+                // else
+                // {
+                //     return _FragColor;
+                // }
+                return fixed4(o.screenPos.xyz, 1.0);
             }
             ENDCG
         }

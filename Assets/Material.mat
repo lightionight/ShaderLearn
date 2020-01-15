@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Material
-  m_Shader: {fileID: 4800000, guid: 0e2812a0ea6f0644aae721d1f133b22a, type: 3}
+  m_Shader: {fileID: 4800000, guid: 61398725d5072b94a87b2d45a6e5f76f, type: 3}
   m_ShaderKeywords: ETC1_EXTERNAL_ALPHA
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -90,12 +90,12 @@ Material:
     - _UseUIAlphaClip: 0
     - _Width: 0
     - _ZWrite: 1
-    - _vertexSize: 65
+    - _vertexSize: 1000
     m_Colors:
     - _Color: {r: 0.754717, g: 0.23851903, b: 0.23851903, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Flip: {r: 1, g: 1, b: 1, a: 1}
-    - _FragColor: {r: 0, g: 0.6031239, b: 1, a: 0}
+    - _FragColor: {r: 0, g: 0.57561064, b: 1, a: 0}
     - _PointColor: {r: 0.2956123, g: 0.8584906, b: 0.54346454, a: 0}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
     - _VertexColor: {r: 1, g: 0.5, b: 1, a: 1}

@@ -2,15 +2,17 @@ Shader "Vertex/Show Vertex"
 {
     Properties
     {
+        
         _FragColor("片段颜色", Color) = (1.0, 0.0, 0.0, 1.0)
         _vertexColor("顶点颜色", Color) = (0.0, 1.0, 0.0, 1.0)
         _vertexSize("顶点大小", float) = 10
-        _MainTex("Texture Image", 2D) = "black"{}
+        _MainTex("Texture Image", 2D) = "white"{}
     }
     SubShader
     {
         pass
         {
+            //Cull Front
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -22,42 +24,30 @@ Shader "Vertex/Show Vertex"
 
             struct a2v{
                 float4 pos : POSITION;
-                float4 uv : TEXCOORD0;
             };
             struct v2f{
                 float4 pos : SV_POSITION;
-                float size : PSIZE;
-                float4 Tex0 : TEXCOORD0;
+                float4 vsPos : TEXCOORD0;
             };
 
             v2f vert(a2v i){
                 v2f o;
                 o.pos = UnityObjectToClipPos(i.pos);
-                //UNITY_INITIALIZE_OUTPUT(v2f o);
-                o.size = _vertexSize;
-                o.Tex0 = i.uv;
-                // o.pos = UnityObjectToClipPos(i.pos);
-                // o.vertexScreenPos = o.pos;
-                // o.vertexScreenPos.xy = ((o.vertexScreenPos.xy / o.vertexScreenPos.w) + 1) * 0.5 * _ScreenParams.xy;
+                o.vsPos = o.pos;
                 return o;
             }
             
             float4 frag(v2f i) :SV_TARGET
             {
-                // if(distance(o.pos.xy, o.vertexScreenPos.xy) < _vertexSize)
-                // {
-                //     return _vertexColor;
-                // }
-                // else
-                // {
-                //     return _FragColor;
-
-                // }
-                //return float4(sin(i.vertexScreenPos.xy), 0.0, 1.0);
-                float4 c = tex2D(_MainTex, i.Tex0);
-                return c;
+                if(i.pos.x < 200)
+                {
+                    return _FragColor;
+                }
+                else
+                {
+                    return _vertexColor;
+                }
             }
-
             ENDCG
         }
         

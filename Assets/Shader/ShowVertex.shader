@@ -39,7 +39,7 @@ Shader "Vertex/Show Vertex"
             
             float4 frag(v2f i) :SV_TARGET
             {
-                if(i.pos.x < 200)
+                if(i.pos.x < 1)
                 {
                     return _FragColor;
                 }
@@ -54,3 +54,5 @@ Shader "Vertex/Show Vertex"
     }
     Fallback Off
 }
+
+//https://forum.unity.com/threads/program-a-shader-that-only-displays-the-visible-edges.773534/#post-5151950

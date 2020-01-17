@@ -1,3 +1,9 @@
+/*
+
+[reference]
+https://forum.unity.com/threads/program-a-shader-that-only-displays-the-visible-edges.773534/#post-5151950
+
+*/
 Shader "Vertex/Show Vertex"
 {
     Properties
@@ -14,40 +20,47 @@ Shader "Vertex/Show Vertex"
         {
             //Cull Front
             CGPROGRAM
+            #include "UnityCG.cginc"
             #pragma vertex vert
+            //#pragma geometry geom
             #pragma fragment frag
             //PointSpriteEnable = bool(enable);
             float4 _FragColor;
             float4 _vertexColor;
             float  _vertexSize;
             sampler2D _MainTex;
-
-            struct a2v{
+            
+            struct VSIN{
                 float4 pos : POSITION;
             };
-            struct v2f{
+
+            struct VSOUT{
                 float4 pos : SV_POSITION;
-                float4 vsPos : TEXCOORD0;
+                nointerpolation float4 result : TEXCOORD0;
             };
 
-            v2f vert(a2v i){
-                v2f o;
-                o.pos = UnityObjectToClipPos(i.pos);
-                o.vsPos = o.pos;
+            VSOUT vert(VSIN i){
+                VSOUT o;
+                o.pos =UnityObjectToClipPos(i.pos);
+                o.result = o.pos;
+                o.result.xy /= o.result.w;
+                o.result.x = (1 + o.result.x) * 0.5 * _ScreenParams.x;
+                o.result.y = (1 - o.result.y) * 0.5 * _ScreenParams.y;
                 return o;
+
             }
-            
-            float4 frag(v2f i) :SV_TARGET
-            {
-                if(i.pos.x < 1)
+
+            fixed4 frag(VSOUT i): SV_TARGET{
+                float dis = distance(i.pos.xy, i.result.xy);
+                if(dis > _vertexSize / 2)
                 {
-                    return _FragColor;
+                   discard;
                 }
-                else
-                {
-                    return _vertexColor;
-                }
+                return _FragColor;
+                // clip (dis - (_vertexSize /2));
+                // return _vertexColor;
             }
+
             ENDCG
         }
         
@@ -55,4 +68,3 @@ Shader "Vertex/Show Vertex"
     Fallback Off
 }
 
-//https://forum.unity.com/threads/program-a-shader-that-only-displays-the-visible-edges.773534/#post-5151950
